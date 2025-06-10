@@ -6,14 +6,18 @@
     <title>LLM Chat App</title>
     <style>
       :root {
-        --primary-color: #f6821f;
-        --primary-hover: #e67e22;
-        --light-bg: #f9fafb;
-        --border-color: #e5e7eb;
-        --text-color: #1f2937;
-        --text-light: #6b7280;
-        --user-msg-bg: #fff2e6;
-        --assistant-msg-bg: #f3f4f6;
+        /* Dark mode with green and purple accents */
+        --primary-color: #8c52ff; /* Purple */
+        --primary-hover: #9d6fff;
+        --secondary-color: #50fa7b; /* Green */
+        --background-color: #1a1a2e;
+        --light-bg: #282a36;
+        --border-color: #44475a;
+        --text-color: #f8f8f2;
+        --text-light: #bd93f9;
+        --user-msg-bg: #483d8b; /* Dark purple for user messages */
+        --assistant-msg-bg: #2c3e50; /* Dark bluish for assistant messages */
+        --code-bg: #282a36; /* Background for code blocks */
       }
 
       * {
@@ -28,6 +32,7 @@
           Cantarell, sans-serif;
         line-height: 1.6;
         color: var(--text-color);
+        background-color: var(--background-color);
         max-width: 800px;
         margin: 0 auto;
         padding: 1rem;
@@ -53,6 +58,7 @@
         border: 1px solid var(--border-color);
         border-radius: 8px;
         overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
       }
 
       .chat-messages {
@@ -67,24 +73,27 @@
         padding: 0.75rem;
         border-radius: 8px;
         max-width: 80%;
+        word-wrap: break-word;
       }
 
       .user-message {
         background-color: var(--user-msg-bg);
         align-self: flex-end;
         margin-left: auto;
+        border-left: 3px solid var(--primary-color);
       }
 
       .assistant-message {
         background-color: var(--assistant-msg-bg);
         align-self: flex-start;
+        border-left: 3px solid var(--secondary-color);
       }
 
       .message-input {
         display: flex;
         padding: 0.75rem;
         border-top: 1px solid var(--border-color);
-        background-color: white;
+        background-color: var(--light-bg);
       }
 
       #user-input {
@@ -95,6 +104,14 @@
         font-family: inherit;
         resize: none;
         min-height: 44px;
+        background-color: var(--background-color);
+        color: var(--text-color);
+      }
+
+      #user-input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(140, 82, 255, 0.3);
       }
 
       #send-button {
@@ -134,7 +151,54 @@
         font-size: 0.85rem;
         color: var(--text-light);
       }
+
+      /* Code formatting */
+      pre {
+        background-color: var(--code-bg);
+        border-radius: 4px;
+        padding: 1rem;
+        overflow-x: auto;
+        margin: 0.5rem 0;
+        border-left: 3px solid var(--secondary-color);
+      }
+
+      code {
+        font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+        font-size: 0.9em;
+      }
+
+      .message a {
+        color: var(--secondary-color);
+        text-decoration: underline;
+      }
+
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: var(--light-bg);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: var(--primary-color);
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--primary-hover);
+      }
     </style>
+
+    <!-- Add Prism.js for code highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
   </head>
   <body>
     <header>
@@ -168,7 +232,7 @@
     </div>
 
     <footer>
-      <p>Cloudflare Workers AI Chat Template &copy; 2025</p>
+      <p>Cloudflare Workers AI Chat &copy; 2025</p>
     </footer>
 
     <!-- Chat app script -->

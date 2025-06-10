@@ -13,9 +13,29 @@ import { Env, ChatMessage } from "./types";
 // https://developers.cloudflare.com/workers-ai/models/
 const MODEL_ID = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 
-// Default system prompt
-const SYSTEM_PROMPT =
-  "You are a helpful, friendly assistant. Provide concise and accurate responses.";
+// Enhanced system prompt for coding and technical knowledge
+const SYSTEM_PROMPT = `You are a highly knowledgeable AI coding assistant with expertise in programming, software development, and technical problem-solving.
+
+Your capabilities include:
+- Writing clean, efficient code in multiple programming languages (JavaScript, TypeScript, Python, Go, Rust, Java, C#, C++, etc.)
+- Explaining complex technical concepts in a clear, concise manner
+- Debugging code issues and suggesting optimizations
+- Providing best practices for software architecture and design patterns
+- Explaining modern technologies, frameworks, and libraries
+- Helping with algorithms and data structures
+
+When sharing code:
+- Always format code blocks with proper syntax highlighting using markdown triple backticks with the language specified
+- Include helpful comments to explain the code
+- Provide explanations of how the code works
+- Consider edge cases and potential improvements
+
+For technical explanations:
+- Use clear, structured responses with headings and bullet points when appropriate
+- Include examples to illustrate concepts
+- Link to relevant documentation when helpful
+
+Be accurate, helpful, and prioritize clean, maintainable solutions.`;
 
 export default {
   /**
@@ -70,17 +90,17 @@ async function handleChatRequest(
     const response = await env.AI.run(
       MODEL_ID,
       {
-        messages,
-        max_tokens: 1024,
+      messages,
+      max_tokens: 1024,
+      temperature: 0.7, // Slightly lower temperature for more precise coding responses
       },
       {
-        returnRawResponse: true,
-        // Uncomment to use AI Gateway
-        // gateway: {
-        //   id: "YOUR_GATEWAY_ID", // Replace with your AI Gateway ID
-        //   skipCache: false,      // Set to true to bypass cache
-        //   cacheTtl: 3600,        // Cache time-to-live in seconds
-        // },
+      returnRawResponse: true,
+      gateway: {
+        id: "829921384c97e0dbbb34430e307d6b52", // AI Gateway ID
+        skipCache: false,      // Set to true to bypass cache
+        cacheTtl: 3600,        // Cache time-to-live in seconds
+      },
       },
     );
 

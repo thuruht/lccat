@@ -17,5 +17,9 @@
   "ai": {
     "binding": "AI"
   },
+  "ai_gateway": {
+    "binding": "AI_GATEWAY",
+    "account_id": "829921384c97e0dbbb34430e307d6b52"
+  },
   "upload_source_maps": true
 }

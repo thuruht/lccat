@@ -114,7 +114,7 @@ async function sendMessage() {
             if (jsonData.response) {
               // Append new content to existing text
               responseText += jsonData.response;
-              assistantMessageEl.querySelector("p").textContent = responseText;
+              assistantMessageEl.querySelector("p").innerHTML = formatMarkdown(responseText);
 
               // Scroll to bottom
               chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -132,7 +132,7 @@ async function sendMessage() {
     console.error("Error:", error);
     addMessageToChat(
       "assistant",
-      "Sorry, there was an error processing your request.",
+      "Sorry, there was an error processing your request."
     );
   } finally {
     // Hide typing indicator
@@ -152,9 +152,51 @@ async function sendMessage() {
 function addMessageToChat(role, content) {
   const messageEl = document.createElement("div");
   messageEl.className = `message ${role}-message`;
-  messageEl.innerHTML = `<p>${content}</p>`;
+  messageEl.innerHTML = `<p>${role === 'assistant' ? formatMarkdown(content) : escapeHtml(content)}</p>`;
   chatMessages.appendChild(messageEl);
 
   // Scroll to bottom
   chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+/**
+ * Format markdown content to HTML
+ */
+function formatMarkdown(text) {
+  // Handle code blocks with language specification
+  text = text.replace(/```([a-z]*)\n([\s\S]*?)```/g, function(match, language, code) {
+    const escapedCode = escapeHtml(code.trim());
+    return `<pre><code class="language-${language}">${escapedCode}</code></pre>`;
+  });
+  
+  // Handle inline code
+  text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+  
+  // Handle bold
+  text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  
+  // Handle italic
+  text = text.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  
+  // Handle links
+  text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+  
+  // Handle line breaks
+  text = text.replace(/\n/g, '<br>');
+  
+  setTimeout(() => Prism.highlightAll(), 0);
+
+  return text;
+}
+
+/**
+ * Escape HTML to prevent XSS
+ */
+function escapeHtml(unsafe) {
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
